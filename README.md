@@ -7,3 +7,5 @@ I am a freshman planning on majoring in Systems and Synethic Biology and Data Sc
 Computational Biology
 
 This repository is for my work in BIS 015L
+
+Contact me at mjyates@ucdavis.edu
