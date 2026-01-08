@@ -18,6 +18,7 @@ getwd() #finds working directory
 **2. Make a new folder in your lab 2 folder called `homework`. Now, change your current working directory to the `homework` folder using the setwd() function.**
 ```{r}
 setwd("/Users/mjyates/Desktop/Untitled/lab2/homework")
+getwd()
 ```
 
 **3. Assign a new object `pi` to a value of 3.14159. You should now see the object `pi` in the environment window in the top right.** 
