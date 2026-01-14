@@ -15,7 +15,7 @@ Answer the following questions and/or complete the exercises in RMarkdown. Pleas
 library("tidyverse")
 ```
 
-In order to answer the questions below, you will need to do a little online research.
+In order to answer the questions below, you will need to do a little online research.  
 
 **1. Make three new vectors that show the name, height in feet, and height in meters of the five tallest mountains in the world.**
 ```{r}
@@ -45,27 +45,36 @@ mountains <- tibble(name, height_feet, height_meters, first_climbed)
 
 **5. How many times have each of these mountains been climbed? Make a new vector `summits` and add it to the `mountains` data frame.**
 ```{r}
-summits <- c(12884, 800, )
+summits <- c(12884, 800, 532, 933, 450)
+mountains$summits <- summits
 ```
 
 **6. Which mountain has the highest number of fatalities? Make a new vector `fatalities` and add it to the `mountains` data frame.**
 ```{r}
-
+fatalities <- c(344, 96, 53, 20, 50)
+mountains$fatalities <- fatalities
 ```
 
 **7. What is the fatality rate (i.e., fatalities divided by summits) for each mountain? Create a new vector `fatality_rate` and add it to the `mountains` data frame.**
 ```{r}
+fatality_rate <- c()
 
+for (i in 1:5){
+  addition <- signif(fatalities[i]/summits[i]*100, digits = 3)
+  fatality_rate <- c(fatality_rate, addition)
+}
+
+mountains$fatality_rate <- fatality_rate
 ```
 
 **8. Write your data frame to a .csv file called `mountains_data`.**
 ```{r}
-
+write_csv(mountains, "mountains_data.csv")
 ```
 
 **9. Clear your environment panel by clicking on the broom icon. Then read in your `mountains_data.csv` file to a new object called `mountains`.**
 ```{r}
-
+mountains <- read_csv("mountains_data.csv")
 ```
 
 ```{r}
@@ -74,7 +83,7 @@ summits <- c(12884, 800, )
 
 **10. Use a summary function of your choice to show the structure of your `mountains` data frame.**
 ```{r}
-
+str(mountains)
 ```
 
 ## Knit and Upload

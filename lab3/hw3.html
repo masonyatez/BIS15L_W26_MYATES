@@ -11,7 +11,7 @@
 
 <meta name="author" content="Your Name Here" />
 
-<meta name="date" content="2026-01-12" />
+<meta name="date" content="2026-01-14" />
 
 <title>Homework 3</title>
 
@@ -376,7 +376,7 @@ display: none;
 
 <h1 class="title toc-ignore">Homework 3</h1>
 <h4 class="author">Your Name Here</h4>
-<h4 class="date">2026-01-12</h4>
+<h4 class="date">2026-01-14</h4>
 
 </div>
 
@@ -395,7 +395,7 @@ code chunks to run.</p>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.4     ✔ readr     2.1.6
 ## ✔ forcats   1.0.1     ✔ stringr   1.6.0
-## ✔ ggplot2   4.0.1     ✔ tibble    3.3.0
+## ✔ ggplot2   4.0.1     ✔ tibble    3.3.1
 ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.2
 ## ✔ purrr     1.2.1     
 ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
@@ -407,30 +407,79 @@ online research.</p>
 <p><strong>1. Make three new vectors that show the name, height in feet,
 and height in meters of the five tallest mountains in the
 world.</strong></p>
+<pre class="r"><code>name &lt;- c(&quot;Mount Everest&quot;, &quot;K2&quot;, &quot;Kangchenjunga&quot;, &quot;Lhotse&quot;, &quot;Makalu&quot;)
+height_feet &lt;- c(29032, 28251, 28169, 27940, 27838)
+height_meters &lt;- c(8849, 8611, 8586, 8516, 8485)</code></pre>
 <p><strong>2. Combine these vectors into a data frame called
 <code>mountains</code>.</strong></p>
+<pre class="r"><code>mountains &lt;- tibble(name, height_feet, height_meters)</code></pre>
 <p><strong>3. What is the mean height of the mountains in
 feet?</strong></p>
+<pre class="r"><code>height_ft_mean &lt;- mean(mountains$height_feet)</code></pre>
 <p><strong>4. When were each of these mountains first climbed (i.e. in
 what year)? Make a new vector <code>first_climbed</code> and add it to
 the <code>mountains</code> data frame.</strong></p>
+<pre class="r"><code>first_climbed &lt;- c(1953, 1954, 1955, 1956, 1955)</code></pre>
+<pre class="r"><code>mountains &lt;- tibble(name, height_feet, height_meters, first_climbed)</code></pre>
 <p><strong>5. How many times have each of these mountains been climbed?
 Make a new vector <code>summits</code> and add it to the
 <code>mountains</code> data frame.</strong></p>
+<pre class="r"><code>summits &lt;- c(12884, 800, 532, 933, 450)
+mountains$summits &lt;- summits</code></pre>
 <p><strong>6. Which mountain has the highest number of fatalities? Make
 a new vector <code>fatalities</code> and add it to the
 <code>mountains</code> data frame.</strong></p>
+<pre class="r"><code>fatalities &lt;- c(344, 96, 53, 20, 50)
+mountains$fatalities &lt;- fatalities</code></pre>
 <p><strong>7. What is the fatality rate (i.e., fatalities divided by
 summits) for each mountain? Create a new vector
 <code>fatality_rate</code> and add it to the <code>mountains</code> data
 frame.</strong></p>
+<pre class="r"><code>fatality_rate &lt;- c()
+
+for (i in 1:5){
+  addition &lt;- signif(fatalities[i]/summits[i]*100, digits = 3)
+  fatality_rate &lt;- c(fatality_rate, addition)
+}
+
+mountains$fatality_rate &lt;- fatality_rate</code></pre>
 <p><strong>8. Write your data frame to a .csv file called
 <code>mountains_data</code>.</strong></p>
+<pre class="r"><code>write_csv(mountains, &quot;mountains_data.csv&quot;)</code></pre>
 <p><strong>9. Clear your environment panel by clicking on the broom
 icon. Then read in your <code>mountains_data.csv</code> file to a new
 object called <code>mountains</code>.</strong></p>
+<pre class="r"><code>mountains &lt;- read_csv(&quot;mountains_data.csv&quot;)</code></pre>
+<pre><code>## Rows: 5 Columns: 7
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): name
+## dbl (6): height_feet, height_meters, first_climbed, summits, fatalities, fat...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <p><strong>10. Use a summary function of your choice to show the
 structure of your <code>mountains</code> data frame.</strong></p>
+<pre class="r"><code>str(mountains)</code></pre>
+<pre><code>## spc_tbl_ [5 × 7] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ name         : chr [1:5] &quot;Mount Everest&quot; &quot;K2&quot; &quot;Kangchenjunga&quot; &quot;Lhotse&quot; ...
+##  $ height_feet  : num [1:5] 29032 28251 28169 27940 27838
+##  $ height_meters: num [1:5] 8849 8611 8586 8516 8485
+##  $ first_climbed: num [1:5] 1953 1954 1955 1956 1955
+##  $ summits      : num [1:5] 12884 800 532 933 450
+##  $ fatalities   : num [1:5] 344 96 53 20 50
+##  $ fatality_rate: num [1:5] 2.67 12 9.96 2.14 11.1
+##  - attr(*, &quot;spec&quot;)=
+##   .. cols(
+##   ..   name = col_character(),
+##   ..   height_feet = col_double(),
+##   ..   height_meters = col_double(),
+##   ..   first_climbed = col_double(),
+##   ..   summits = col_double(),
+##   ..   fatalities = col_double(),
+##   ..   fatality_rate = col_double()
+##   .. )
+##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
 </div>
 <div id="knit-and-upload" class="section level2">
 <h2>Knit and Upload</h2>
