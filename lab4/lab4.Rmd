@@ -212,7 +212,7 @@ ggplot(data=penguins,
   geom_bar(aes(fill=island))+
   labs(title="Penguins per Island",
     x="Island Name",
-    y="Penguin Name")
+    y="Penguin Count")
 ```
 
 ```{r}
@@ -224,10 +224,10 @@ ggplot(data=penguins,
 ggplot(data=penguins,
        mapping=aes(x=island)
        )+
-  geom_bar(aes(fill=species))+
-  labs(title="Penguins per Island",
+  geom_bar(aes(fill=species), position="dodge")+
+  labs(title="Species of Penguins per Island",
     x="Island Name",
-    y="Penguin Name")
+    y="Penguin Count")
 ```
 
 ## Wrap-up  
