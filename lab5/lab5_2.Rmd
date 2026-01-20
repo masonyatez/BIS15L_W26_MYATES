@@ -169,7 +169,8 @@ Let's use the fish data again to keep things simple.
 ```{r}
 fish %>% 
   select(radii_length_mm, scalelength, fish_id) %>% 
-  filter(fish_id==300)
+  filter(fish_id==300) %>% 
+  arrange(radii_length_mm)
 ```
 
 2. We are interested in the fish from the lakes "AL" and "AR" with a radii length between 2 and 4. Extract this information from the `fish` data. Please sort the data in descending order by radii length.

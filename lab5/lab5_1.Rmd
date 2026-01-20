@@ -123,8 +123,8 @@ glimpse(msleep)
 
 3. Make a new dataframe that only includes the variables `order`, `genus`, and `bodywt.`
 ```{r}
-msleep_ <- select(msleep, order, genus, bodywt)
-msleep_
+trim_msleep <- select(msleep, order, genus, bodywt)
+trim_msleep
 ```
 
 4. What if we are only interested in the numeric variables? Make a new dataframe that is restricted to numerics.
