@@ -26,12 +26,19 @@ glimpse(msleep)
 
 **2. What are the names of the variables? To get a better idea of what the variables mean, you can use `?msleep`.**
 
-```{r}
-?msleep
-```
-
+The names of the variables are:
+order,
+conservation,
+sleep_total,
+sleep_rem,
+sleep_cycle,
+awake,
+brainwt,
+bodywt
 
 **3. Make a plot that shows the number of mammals in each vore type. Which vore type is most represented in the data?**
+
+Herbivores are the most represented.
 
 ```{r}
 ggplot(data=msleep,
@@ -79,11 +86,87 @@ ggplot(data=msleep,
 
 **7. Is there a relationship between body weight and total sleep time? Add appropriate labels and a title to your plot.**
 
+Yes, there is a relationship between body weight and total sleep time. Higher body weights indicate lower total sleep time.
+
+```{r}
+ggplot(data=msleep,
+       mapping=aes(x=bodywt, y=sleep_total)
+       )+
+  geom_point(mapping=aes(color=vore))+
+  geom_smooth(method=lm, color="black")+
+  scale_x_log10()+
+  labs(title="Body Weight (kg) vs Total Sleep (Hrs)",
+       x = "Body Weight (kg)",
+       y = "Total Sleep (Hrs)")
+```
+
+
 **8. Which vore type tends to sleep the most? Build a plot to support your answer.**
+
+Insectivores tend to sleep the most.
+
+```{r}
+ggplot(data=msleep,
+       mapping=aes(x=vore, y=sleep_total)
+       )+
+  geom_boxplot(mapping=aes(fill=vore))+
+  scale_x_discrete(na.translate=F)+
+  labs(title="Sleep Times (Hrs) of Vore Type",
+       x="Vore Type",
+       y="Sleep Time (Hrs)")
+```
+
 
 **9. Is there a relationship between brain weight and body weight? Build a plot to support your answer.**
 
+Yes, there is a relationship between brain weight and body weight. As body weight increases, brain weight is likely to increase.
+
+```{r}
+ggplot(data=msleep,
+       mapping=aes(y=brainwt, x=bodywt)
+       )+
+  geom_point(mapping=aes(color=vore))+
+  geom_smooth(method=lm, color="black")+
+  scale_x_log10()+
+  labs(title="Body Weight (kg) vs Brain Weight (kg)",
+       x="Body Weight (kg)",
+       y="Brain Weight (kg)")
+  
+```
+
+
 **10. Build one plot of your choice that provides additional insight into the msleep dataset. Be sure to include appropriate labels and a title.**
+
+```{r}
+brown_green_palette <- c(
+  "#2F5D50",  
+  "#6B8E6E",
+  "#8A9A5B",
+  "#7A5C47",
+  "#5B3A29", 
+  "#C8B7A6" 
+)
+conservation_labels <- c(
+  "lc" = "Least Concern",
+  "nt" = "Near Threatened",
+  "vu" = "Vulnerable",
+  "en" = "Endangered",
+  "domesticated" = "Domesticated",
+  "cd" = "Conservation 
+Dependent"
+)
+
+ggplot(data=msleep,
+       mapping=aes(x=conservation, fill=conservation)
+       )+
+  geom_bar()+
+  scale_fill_manual(values=brown_green_palette)+ #it looks good now!
+  scale_x_discrete(labels=conservation_labels, na.translate=F)+ #it has labels!
+  labs(title="Count of Present Conservation Statuses",
+       x="Conservation Status",
+       y="Count")
+```
+
 
 ## Knit and Upload
 Please knit your work as an .html file and upload to Canvas. Homework is due before the start of the next lab. No late work is accepted. Make sure to use the formatting conventions of RMarkdown to make your report neat and clean!  
