@@ -37,61 +37,184 @@ summary(homerange)
 ```
 
 **3. Which animal groups are represented in the data? Make a plot that shows the number in each class.**
+
+The classes represented in the data are actinopterygii, aves, mammalia, and reptilia.
+
 ```{r}
 brown_green_palette <- c(
-  "#2F5D50",  
-  "#6B8E6E",
-  "#8A9A5B",
+  "#2F5D50",
+  "#3E6B5C",
+  "#4A7A67",
+  "#5A8F76",
+  "#6B9B7C",
+  "#7AA58B",
+  "#8AA892",
+  "#9CB49B",
+  "#AFC6A3",
+  "#C0D3B2",
   "#7A5C47",
-  "#5B3A29", 
-  "#C8B7A6" 
+  "#8B6452",
+  "#9C735D",
+  "#AD8268",
+  "#BD9174",
+  "#CEA181",
+  "#DDB18F",
+  "#EEC1A0",
+  "#F0D0B2",
+  "#C8B7A6"
 )
 
 homerange %>% 
-  select(taxon) %>% 
-  ggplot(mapping=aes(x=taxon, fill=taxon)
+  select(class) %>% 
+  ggplot(mapping=aes(x=class, fill=class)
          )+
   geom_bar()+
-  scale_fill_manual(values=brown_green_palette)
+  scale_fill_manual(values=brown_green_palette)+
+  labs(title="Count of Represented Classes",
+       x="Class",
+       y="Count")
   
 ```
 
 **4. Are there more carnivores or herbivores represented in the data? Make a plot that shows the number in each trophic guild.**
-```{r}
 
+There are more carnivores than herbivores represented in the data.
+
+```{r}
+homerange %>% 
+  select(trophic.guild) %>% 
+  ggplot(mapping=aes(x=trophic.guild, fill=trophic.guild)
+         )+
+  geom_bar()+
+  scale_fill_manual(values=brown_green_palette)+
+  labs(title="Count of Each Trophic Guild",
+       x="Trophic Guild",
+       y="Count")
 ```
 
 **5. Which herbivorous mammals have homeranges greater than 1,000,000 m²? Show only the common name, order, mean homerange size, and mean body mass. Arrange the data in descending order by homerange size and show only the top 10 species.**
-```{r}
 
+
+```{r}
+homerange %>% 
+  select(common.name, order, mean.hra.m2, mean.mass.g, trophic.guild) %>% 
+  filter(trophic.guild=="herbivore") %>% 
+  select(!trophic.guild) %>% 
+  filter(mean.hra.m2>=1000000) %>% 
+  arrange(desc(mean.hra.m2)) %>% 
+  slice_max(mean.hra.m2, n=10)
 ```
 
 **6. Which two species have the largest and smallest homerange sizes?**
-```{r}
-
-```
+Tarandus has the largest mean homerange size, while hipoliti has the smallest homerange size.
 
 ```{r}
+max_species <- homerange %>% 
+  select(species, mean.hra.m2) %>% 
+  slice_max(mean.hra.m2)
+
+min_species <- homerange %>% 
+  select(species, mean.hra.m2) %>% 
+  slice_min(mean.hra.m2)
+
+combined_species <- full_join(max_species, min_species)
+combined_species
 
 ```
 
 **7. Which carnivorous mammals have the largest homeranges?**
-```{r}
 
+The cheetah, leopard, caracal, wolverine, cougar, and Eurasian lynx have the largest mean homeranges of the available carnivorous mammals.
+
+```{r}
+homerange %>% 
+  select(common.name, class, trophic.guild, mean.hra.m2) %>% 
+  filter(class=="mammalia" & trophic.guild=="carnivore") %>% 
+  arrange(desc(mean.hra.m2))
 ```
 
 **8. Is there a relationship between body mass and homerange size? Make a scatterplot to show this relationship. Be sure to include appropriate labels and a title.**
+
+Yes, there is relationship between body mass and homerange size. As body mass increases, it is likely that home range size will increase.
+
 ```{r}
 
+trophic_colors <- c(
+  "herbivore" = "#2F5D50",
+  "carnivore" = "#AD8268"
+  )
+  
+homerange %>% 
+  select(mean.mass.g, mean.hra.m2, trophic.guild) %>% 
+  ggplot(mapping=aes(x=mean.mass.g, y=mean.hra.m2, color=trophic.guild)
+          )+
+  geom_point() + geom_smooth(method=lm, color="black")+
+  scale_x_log10() + scale_y_log10()+
+  scale_color_manual(values=trophic_colors)+
+  labs(title="Average Body Mass (g) vs Average Homerange Size (m^2)",
+       x="Mean Body Mass (g)",
+       y="Mean Homerange Size (m^2)",
+       color="Trophic Guild")
+  
 ```
 
 **9. Use filter to extract the data for only birds and mammals. Then make a plot that compares the homerange sizes of these two groups. Be sure to include appropriate labels and a title.**
 ```{r}
+class_colors <- c(
+  "aves" = "#2F5D50",
+  "mammalia" = "#AD8268"
+  )
 
+homerange %>% 
+  select(class, mean.hra.m2) %>% 
+  filter(class=="aves" | class=="mammalia") %>% 
+  ggplot(mapping=aes(x=class, y=mean.hra.m2, fill=class)
+         )+
+  geom_boxplot()+
+  scale_y_log10()+
+  scale_fill_manual(values=class_colors)+
+  labs(title="Homeranges of Aves and Mammalia",
+       x="Class",
+       y="Mean Homerange Size (m^2)",
+       fill="Class")
 ```
 
 **10. Do one additional exploratory analysis of your choice. Before writing the code, write the question you are trying to answer. The question should be biologically meaningful and appropriate for the data. It must include at least one `filter()`, `select()`, and `arrange()`.**
+
+What are the average home ranges of different terrestrial locomotive types? What is the maximum of each type?
+
+The top range of crawling is 2579600 square meters, the top range of flying is 200980000 square meters, the top range of walking is 3550830977 square meters.
+
 ```{r}
+loco_colors <- c(
+  "flying" = "#2F5D50",
+  "walking" = "#AD8268",
+  "crawling" = "#C8B7A6"
+  )
+
+terrestrial_ranges <- homerange %>%
+  select(locomotion, mean.hra.m2, realm) %>%
+  filter(realm == "terrestrial") %>%
+  select(!realm)
+  
+ggplot(terrestrial_ranges,
+       mapping=aes(x=locomotion, y=mean.hra.m2, fill=locomotion)
+         )+
+  geom_boxplot()+
+  scale_y_log10()+
+  scale_fill_manual(values=loco_colors)+
+  labs(title="Average Homerange of Terrestrial Locomotion Types",
+       x="Locomotion Type",
+       y="Mean Homerange (m^2)",
+       fill="Locomotion Type")
+
+top_ranges <- terrestrial_ranges %>%
+  group_by(locomotion) %>% #wanted to learn how grouping worked
+  arrange(desc(mean.hra.m2)) %>%
+  slice_max(mean.hra.m2, n=1) %>% 
+  ungroup()
+
+top_ranges
 
 ```
 
