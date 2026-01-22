@@ -23,7 +23,7 @@ Reference: Koerner SE, Poulsen JR, Blanchard EJ, Okouyi J, Clark CJ. Vertebrate 
 
 **1. Load `IvindoData_DryadVersion.csv` and store it as a new object called `gabon`.**
 ```{r}
-
+getwd()
 ```
 
 **2. Use one or more of the summary functions you have learned to get an idea of the structure of the data.**  
