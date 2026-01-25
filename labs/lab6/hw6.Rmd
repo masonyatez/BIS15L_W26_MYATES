@@ -1,6 +1,6 @@
 ---
 title: "Homework 6"
-author: "Your Name Here"
+author: "Mason Yates"
 date: "`r Sys.Date()`"
 output:
   html_document: 
@@ -24,30 +24,50 @@ Reference: Koerner SE, Poulsen JR, Blanchard EJ, Okouyi J, Clark CJ. Vertebrate 
 **1. Load `IvindoData_DryadVersion.csv` and store it as a new object called `gabon`.**
 ```{r}
 getwd()
+gabon <- read_csv("data/IvindoData_DryadVersion.csv")
 ```
 
 **2. Use one or more of the summary functions you have learned to get an idea of the structure of the data.**  
 ```{r}
-
+glimpse(gabon)
+summary(gabon)
 ```
 
 **3. Clean the data as necessary following the conventions from lab 6.**
 ```{r}
-
+gabon <- gabon %>% 
+  clean_names()
 ```
 
 ```{r}
-
 ```
 
 **4. Use `mutate()` Change the variables `HuntCat`, `LandUse`, and `TransectID` to factors. Be sure to store the output as a new dataframe and use it for the remaining questions.**
 ```{r}
-
+gabon <- gabon %>% 
+  mutate(across(
+    c(transect_id, hunt_cat, land_use), 
+    as.factor
+    ))
 ```
 
 **5. Make a plot that shows the number of transects for each land use type.**
 ```{r}
-
+land_colors <- c(
+  "Logging" = "#AD8268",
+  "Park" = "#2F5D50", 
+  "Neither" = "#C8B7A6"
+)
+gabon %>% 
+  select(land_use, transect_id) %>% 
+  ggplot(mapping=aes(x=land_use, fill=land_use)
+         )+
+  geom_bar()+
+  scale_fill_manual(values=land_colors)+
+  labs(title="Transect Count For Each Type of Land Used",
+       x = "Land Used",
+       y = "Transect Count",
+       fill = "Land Used")
 ```
 
 ```{r}
@@ -55,13 +75,36 @@ getwd()
 ```
 
 **6. How does vegetation richness compare among land use types?**
-```{r}
 
+Vegetation richness is the most plentiful and of lowest variance in the Park type of used land. Logging and Neither have lower average and much more variable vegetation richness.
+
+```{r}
+gabon %>% 
+  ggplot(
+    mapping=aes(
+      x = land_use,
+      y = veg_rich,
+      fill = land_use
+    ))+
+  geom_boxplot()+
+  scale_fill_manual(values=land_colors)+
+  labs(title="Vegetation Richness of Land Types Used",
+       x="Land Type Used",
+       y="Vegetation Richness",
+       fill="Land Type")
 ```
 
 **7. For which land use type (national parks, logging, or neither) is average all species diversity the greatest?**
-```{r}
 
+National parks have the greatest average species diversity across all species at approximately 2.43.
+
+```{r}
+gabon %>% 
+  select(land_use, diversity_all_species) %>% 
+  group_by(land_use) %>% 
+  mutate(average_div=mean(diversity_all_species)) %>% 
+  ungroup() %>% 
+  distinct(land_use, average_div)
 ```
 
 ```{r}
@@ -77,22 +120,48 @@ getwd()
 ```
 
 **8. Is there a relationship between vegetation richness and mammal species richness?**
-```{r}
 
+There is a relationship between vegetation richness and mammal species richness. As vegetation richness increases, mammal species richness will likely increase.
+```{r}
+gabon %>% 
+  ggplot(mapping=aes(
+    x=veg_rich,
+    y=rich_mammal_species,
+    color=land_use
+  ))+
+  geom_point()+
+  geom_smooth(
+    method=lm,
+    se=T,
+    color="black"
+    )+
+  scale_color_manual(
+    values=land_colors
+    )+
+  labs(
+    title="Vegetation Richness vs Mammal Species Richness",
+    x="Vegetation Richness",
+    y="Mammal Species Richness",
+    color="Land Type Sampled")
 ```
 
 **9. Use `filter` to find all transects that have greater than 15 tree species or a breast height diameter between 50 and 60cm.  **
 ```{r}
-
+gabon %>%
+  select(transect_id, veg_rich, veg_dbh) %>% 
+  filter(veg_rich > 15 | (50 < veg_dbh & veg_dbh < 60))
 ```
 
 ```{r}
-
 ```
 
 **10.Which transects and land use types have more than 10 tree species and 10 mammal species? Use `arrange()` to sort by the number of tree species.**
 ```{r}
-
+gabon %>% 
+  select(transect_id, land_use, veg_rich, rich_mammal_species) %>% 
+  filter(veg_rich > 10) %>% 
+  filter(rich_mammal_species > 10) %>% 
+  arrange(veg_rich)
 ```
 
 ## Knit and Upload
