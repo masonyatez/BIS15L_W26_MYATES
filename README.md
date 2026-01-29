@@ -1,11 +1,13 @@
-# BIS15L_W26_MASONYATES
+# BIS15L_W26_MYATES
 
-## Hello!
-My name is Mason Yates and I am a student in BIS 015L at UC Davis
+## Overview
+This repository contains my coursework for BIS 015L (Introduction to Data Science for Biologists) at UC Davis.
 
-I am a freshman planning on majoring in Systems and Synethic Biology and Data Science, with a minor in
-Computational Biology
+My name is Mason Yates, and I am a freshman planning to major in Systems and Synthetic Biology and Data Science, with a minor in Computational Biology. This repository serves as a centralized record of my assignments, labs, and related work throughout the quarter.
 
-This repository is for my work in BIS 015L
+## Repository Structure
+The homework folder contains homework assignments and exercises.
+The labs folder contains weekly lab work and lab-related files.
 
-Contact me at mjyates@ucdavis.edu
+## Contact
+mjyates@ucdavis.edu
