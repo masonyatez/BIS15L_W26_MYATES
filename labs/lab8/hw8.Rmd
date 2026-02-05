@@ -1,6 +1,6 @@
 ---
 title: "Homework 8"
-author: "Your Name Here"
+author: "Mason Yates"
 date: "`r Sys.Date()`"
 output:
   html_document: 
@@ -111,6 +111,9 @@ fisheries_clean %>%
 ```
 
 9. How has fishing of this species changed over the last decade (2013-2023)? Create a  plot showing total catch by year for this species.
+
+The total catch amount of the Alaska Pollock has slightly increased in the last decade, with some fluctuations throughout.
+
 ```{r}
 fisheries_clean %>% 
   filter(common_name == "Alaska pollock(=Walleye poll.)") %>% 
@@ -123,15 +126,59 @@ fisheries_clean %>%
     mapping=aes(
       x = period,
       y = total_catch,
-      fill = "orange"
     )
   )+
-  geom_col()
+  geom_col(fill = "orange")+
+  labs(
+    title = "Alaska Pollock Catch Quantities Throughout the Years",
+    x = "Year",
+    y = "Total Catch Amount"
+  )
 ```
 
 10. Perform one exploratory analysis of your choice. Make sure to clearly state the question you are asking before writing any code.
-```{r}
 
+How have the top 10 countries by catch changed from 2013 to 2023?
+
+```{r}
+country_palette <- c(
+  "Chile" = "#1F4F4A",
+  "China" = "#3A6B35",
+  "India" = "#8A9A3A",
+  "Indonesia" = "#5F7F6E",
+  "Japan" = "#2E5E8A",
+  "Myanmar" = "#7A8F3A",
+  "Norway" = "#4A6FA5",
+  "Peru" = "#8C5A2B",
+  "Philippines" = "#A27C4F",
+  "Russian Federation" = "#5B4A3A",
+  "United States of America" = "#6E7D6A",
+  "Viet Nam" = "#B39B6B"
+)
+
+fisheries_clean %>% 
+  filter(period %in% c(2013:2023)) %>% 
+  group_by(period, country) %>%
+  summarize(
+    total_catch = sum(catch)) %>%
+  ungroup() %>% 
+  group_by(period) %>% 
+  slice_max(total_catch, n = 10) %>% 
+  ggplot(
+    mapping=aes(
+      x=period,
+      y=total_catch,
+      fill=country
+    )
+  )+
+  geom_col(position = 'stack')+
+  scale_fill_manual(values = country_palette)+
+  labs(
+    title = "Total Catch of the Top 10 Countries from 2013 to 2023",
+    x = "Year",
+    y = "Total Catch Amount",
+    fill = "Country"
+  )
 ```
 
 ## Knit and Upload
