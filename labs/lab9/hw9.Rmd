@@ -34,6 +34,9 @@ glimpse(beaches)
 ```
 
 2. Are these data "tidy" per the definitions of the tidyverse? How do you know? Are they in wide or long format?
+
+Other than the names of the columns the data is tidy, each variable has a column, each observation has a row, and each value has a cell. The format is long because each region appears multiple times.
+
 ```{r}
 sydneybeaches <- beaches %>% 
   clean_names()
@@ -93,13 +96,25 @@ sydneybeaches_long %>%
                            na.rm = TRUE)
   ) %>% 
   pivot_wider(
-    
+    names_from = year,
+    values_from = avg_enterococci
   )
 ```
 
 9. What was the most polluted beach in 2013?
-```{r}
 
+Little Bay Beach was the most polluted beach on average in 2013.
+
+```{r}
+sydneybeaches_long %>% 
+  group_by(site, year) %>% 
+  summarize(
+    avg_enterococci = mean(enterococci_cfu_100ml, 
+                           na.rm = TRUE),
+    .groups = "drop"
+  ) %>% 
+  filter(year == "2013") %>% 
+  slice_max(avg_enterococci, n = 1)
 ```
 
 ```{r}
@@ -108,7 +123,43 @@ sydneybeaches_long %>%
 
 10. Explore the data! Do one analysis of your choice that includes a minimum of three lines of code.  
 ```{r}
+beach_palette <- c(
+  "Bondi Beach" = "#1F5A8A",
+  "Bronte Beach" = "#3A7CA5",
+  "Clovelly Beach" = "#5DA9A4",
+  "Coogee Beach" = "#2F7F6F",
+  "Gordons Bay (East)" = "#4B8F8C",
+  "Little Bay Beach" = "#8FBAC8",
+  "Malabar Beach" = "#C9B27C",
+  "Maroubra Beach" = "#8C6A4A",
+  "South Maroubra Beach" = "#A07F5A",
+  "South Maroubra Rockpool" = "#6B5B4D",
+  "Tamarama Beach" = "#4A6FA5"
+)
 
+sydneybeaches_long %>% 
+  group_by(site, year) %>% 
+  summarize(
+    avg_enterococci = mean(enterococci_cfu_100ml, 
+                           na.rm = TRUE),
+    .groups = "drop") %>% 
+  ggplot(
+    mapping = aes(
+      x = year,
+      y = avg_enterococci,
+      fill = site
+    )
+  )+
+  geom_col(position = "stack")+
+  scale_fill_manual(
+    values = beach_palette
+  )+
+  labs(
+    title = "Average Entercocci Presence from 2013 to 2018",
+    x = "Year",
+    y = "Total Average Enterococci (cfu 100 ml)",
+    fill = "Beach Site"
+  )
 ```
 
 ## Knit and Upload
